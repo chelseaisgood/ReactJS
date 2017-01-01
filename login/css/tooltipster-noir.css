@@ -1,0 +1,12 @@
+.tooltipster-noir {
+	border-radius: 0px; 
+	border: 0px solid #2c2c2c;
+	background: rgba(0,0,0,0.85);
+	color: white;
+}
+.tooltipster-noir .tooltipster-content {
+	font-family: 'Georgia', serif;
+	font-size: 14px;
+	line-height: 16px;
+	padding: 8px 10px;
+}
