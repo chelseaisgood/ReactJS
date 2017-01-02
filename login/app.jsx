@@ -1,3 +1,32 @@
+var LoginPage = React.createClass({
+    
+    getInitialState: function() {
+      return {
+        title: "Edu.chat",
+      };
+    },
+    
+    propTypes: {
+        token: React.PropTypes.string.isRequired,   
+    },
+    
+    render: function() {
+        return (
+            <div className="system-message" style={{"fontFamily": 'Times New Roman', "color": "#333", "fontSize": "16px"}}>
+                <h1>{this.state.title}</h1>
+                <h4>{this.props.token}</h4>
+                <p className="error">You have been logged in!</p>
+			    <div className="jump" style={{"fontSize": "1cm", "marginDown":"120px"}}>
+                    <div style={{"fontSize": "1cm", "marginTop":"120px"}}>
+                        Page <a id="href" href="../welcome_page/index.html" style={{"color":"blue"}}>Redirecting</a>... 
+                    </div>
+                    <text style={{"fontSize": "0.7cm"}}> Automatically reloading the Login Page after <b id={"wait"}>3</b> Seconds!</text>
+			    </div>
+            </div>
+        );
+    }
+});
+
 var LoginForm = React.createClass({
     
     propTypes: {
@@ -16,7 +45,7 @@ var LoginForm = React.createClass({
         username: '',
         password: '',
         errors: {},
-        token: '',
+        token: "fefb972f8288220aad613e2cd18a4e28ecf7f89d",
       };
     },
     
@@ -80,6 +109,7 @@ var LoginForm = React.createClass({
                         this.state.password = '';
                         this.setState({password: this.state.password});
                         alert(msg.reason);
+                        ReactDOM.render(<LoginPage token={this.state.token} / >, document.getElementById('container'));
                         break;
                     default:
                         alert('undefined');
