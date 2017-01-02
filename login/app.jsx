@@ -15,7 +15,8 @@ var LoginForm = React.createClass({
       return {
         username: '',
         password: '',
-        errors: {}
+        errors: {},
+        token: '',
       };
     },
     
@@ -25,22 +26,7 @@ var LoginForm = React.createClass({
     
     onPasswordChange: function(e) {
         this.setState({password: e.target.value});
-    },
-    
-//    componentDidMount: function() {
-//      this.serverRequest = $.get(this.props.source, function (result) {
-//        var lastGist = result[0];
-//        this.setState({
-//          username: lastGist.owner.login,
-//          lastGistUrl: lastGist.html_url
-//        });
-//      }.bind(this));
-//    },
-//
-//    componentWillUnmount: function() {
-//      this.serverRequest.abort();
-//    },
-    
+    },    
     
     onSubmit: function (e) {
         console.log('login requested');
@@ -52,10 +38,7 @@ var LoginForm = React.createClass({
             });
             return;
         }
-        var xhr = this.onLogin();
-        xhr.done(this._onSuccess)
-        .fail(this._onError)
-        .always(this.hideLoading)
+        this.onLogin();
     },
     
     onValidate: function () {
@@ -69,31 +52,47 @@ var LoginForm = React.createClass({
         return errors;
     },
     
+    
     onLogin: function () {
         return $.ajax({
             url: this.props.source,
-            type: 'POST',
-            headers: { 'Access-Control-Allow-Origin': '*' },
+            type: "POST",
+//            headers: { 'Access-Control-Allow-Origin': '*',
+//                       'Access-Control-Allow-Methods': 'POST',
+//                       'Access-Control-Max-Age': '1000',
+//                       'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'},
             crossDomain: true,
-            dataType: "jsonp", 
-            data: {
-                username: this.state.username,
-                password: this.state.password,
-            },
-            success: function () { alert('it works') },
-            error: function() {alert('it doesnt work')},
-//            beforeSend: function () {
-//                this.setState({loading: true});
-//            }.bind(this)
+            dataType: "json", 
+            contentType: "application/json",
+            data: JSON.stringify({
+                "username": this.state.username,
+                "password": this.state.password,
+            }),
+            success: function (msg) {//On Successful service call   
+                console.log(msg);
+                
+                switch (msg.success) {
+                    case true:
+                        alert('true');
+                        this.state.token = msg.token;
+                        break;
+                    case false:
+                        this.state.password = '';
+                        this.setState({password: this.state.password});
+                        alert(msg.reason);
+                        break;
+                    default:
+                        alert('undefined');
+                        break;
+                };
+            }.bind(this),
+            error: function (xhr) { 
+                console.log(xhr.responseText); 
+                alert('it doesnt work');
+            }, 
         })
     },
     
-//    onSubmit: function(e) {
-//        console.log('onScoreChange');
-////        e.preventDefault();
-////        this.props.onAdd(this.state.name);
-////        this.setState({name: ""});
-//    },
     // return a virtual DOM representations for components
     render: function() {
         return (
@@ -107,4 +106,4 @@ var LoginForm = React.createClass({
     }
 });
 
-ReactDOM.render(<LoginForm title={"Edu.chat"} source="http://bot.edu.chat:8080/alpha.edu.chat/api/login"/ >, document.getElementById('container'));
+ReactDOM.render(<LoginForm title={"Edu.chat"} source="https://alpha.edu.chat/api/login"/ >, document.getElementById('container'));
